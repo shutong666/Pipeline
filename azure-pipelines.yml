@@ -38,6 +38,15 @@ steps:
      feedsToUse: 'select'
      vstsFeed: 'my-vsts-feed'  #A series of numbers and letters 
 - task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+   command: restore
+   projects: '**/*.csproj'
+   feedsToUse: config
+   nugetConfigPath: Nuget.config #Relative to root of the repository#
+   #externalFeedCredentials: <Name of the Nuget service connection>
+   
+- task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     arguments: '--configuration $(buildConfiguration)'
