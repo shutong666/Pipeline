@@ -3,12 +3,27 @@
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
+#trigger:
+#- main
+
+#pool:
+#  vmImage: 'ubuntu-latest' # original
+  
+#variables:
+#  buildConfiguration: 'Release'
+
+#steps:
+#- script: dotnet build --configuration $(buildConfiguration)
+#  displayName: 'dotnet build $(buildConfiguration)'
+
 trigger:
-- main
+#- main
+- master
 
 pool:
-  # vmImage: 'ubuntu-latest' # original
-  vmImage: 'ubuntu-18.04' # examples of other options: 'macOS-10.15', 'windows-2019'
+  #vmImage: 'ubuntu-latest' # original
+  #vmImage: 'ubuntu-18.04' # examples of other options: 'macOS-10.15', 'windows-2019'
+  vmImage: 'windows-latest'
 
 variables:
   buildConfiguration: 'Release'
@@ -16,3 +31,25 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  inputs:
+     command: 'restore'
+     feedsToUse: 'select'
+     vstsFeed: 'my-vsts-feed'  #A series of numbers and letters 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    arguments: '--configuration $(buildConfiguration)'
+  displayName: 'dotnet build $(buildConfiguration)'
+
+#- task: UseDotNet@2
+#  displayName: 'Install .NET Core SDK'
+#  inputs:
+#    version: '5.0.x'
+#    performMultiLevelLookup: true
+#    includePreviewVersions: true
+#- task:
+#  inputs:
+#   version: '3.0.x'
+#   packageType: runtime
